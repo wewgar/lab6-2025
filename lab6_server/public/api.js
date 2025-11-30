@@ -1,7 +1,7 @@
-// public/api.js
+
 
 /**
- * Допоміжна функція для обробки помилок HTTP.
+ * функція для обробки помилок HTTP.
  * @param {Response} response
  */
 function handleResponse(response) {
@@ -11,17 +11,10 @@ function handleResponse(response) {
     return response.json();
 }
 
-/**
- * Функція getCurrentUsersCount: залишається простою, оскільки вона не залежить від масиву.
- * (Буде використовуватися у main.js для футера)
- */
 function getCurrentUsersCount() {
     return Math.floor(Math.random() * 50) + 10;
 }
 
-// -------------------------------------------------------------
-// АСИНХРОННІ ФУНКЦІЇ ДЛЯ ЗВ'ЯЗКУ З EXPRESS.JS:
-// -------------------------------------------------------------
 
 async function fetchUsers() {
     try {

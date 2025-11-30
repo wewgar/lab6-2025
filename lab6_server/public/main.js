@@ -1,17 +1,17 @@
-let currentLoadedUsers = []; // Зберігає останній завантажений масив користувачів
-let currentSortOrder = { column: 'lastname', direction: 'asc' }; // Стан сортування для ЛР №4
+let currentLoadedUsers = []; 
+let currentSortOrder = { column: 'lastname', direction: 'asc' }; 
 
-document.addEventListener('DOMContentLoaded', init); // Викликаємо ініціалізацію після завантаження DOM
+document.addEventListener('DOMContentLoaded', init);
 
 function init() {
     const mainContainer = document.getElementById('main');
     if (!mainContainer) return;
 
-    // 1. Створення основної структури (header, content-container, footer)
+   
     const header = document.createElement('header');
     header.id = 'header';
     const contentContainer = document.createElement('div');
-    contentContainer.id = 'content-container'; // Для leftPanel, content, rightPanel
+    contentContainer.id = 'content-container'; 
     const footer = document.createElement('footer');
     footer.id = 'footer';
 
@@ -19,7 +19,6 @@ function init() {
     mainContainer.appendChild(contentContainer);
     mainContainer.appendChild(footer);
 
-    // 2. Створення внутрішніх панелей
     const leftPanel = document.createElement('div');
     leftPanel.id = 'leftPanel';
     const content = document.createElement('div');
@@ -31,23 +30,21 @@ function init() {
     contentContainer.appendChild(content);
     contentContainer.appendChild(rightPanel);
 
-    // 3. Додавання лоадерів
+    
     const loaderHTML = '<div class="loader-container"><div class="loader"></div></div>';
     leftPanel.innerHTML = loaderHTML;
     content.innerHTML = loaderHTML;
     rightPanel.innerHTML = loaderHTML;
 
-    // 4. Налаштування функціоналу
+    
     setupHeader(header);
     setupFooter(footer);
     setupContentPanel(content);
-    setupLeftPanel(leftPanel); // <-- Логіка погоди тепер тут
+    setupLeftPanel(leftPanel); 
     setupRightPanel(rightPanel);
 }
 
-// =========================================================================
-// БЛОК HEADER (Завдання 3, 10 + 2.d Галерея ЛР №6)
-// =========================================================================
+
 function setupHeader(headerElement) {
     const buttons = ['User Rating', 'News', 'Contacts', 'About', 'Галерея'];
     const contentDiv = document.getElementById('content');
@@ -57,28 +54,28 @@ function setupHeader(headerElement) {
         btn.textContent = text;
         
         btn.addEventListener('click', () => {
-            // Приховуємо вміст rightPanel
+            
             document.getElementById('rightPanel').innerHTML = ''; 
             
             contentDiv.innerHTML = `<h2>${text}</h2>`;
 
             if (text === 'User Rating') {
-                // Відновлюємо контейнер Get Users
+                
                 setupContentPanel(contentDiv);
             } else if (text === 'Галерея') {
-                displayGallery(contentDiv); // Виклик функції галереї
+                displayGallery(contentDiv); 
             }
         });
         headerElement.appendChild(btn);
     });
 }
 
-// Функція для відображення галереї (Завдання 2.d ЛР №6)
+
 async function displayGallery(contentElement) {
     contentElement.innerHTML = '<h2>Галерея</h2><div class="loader-container"><div class="loader"></div></div>';
     
     try {
-        const images = await fetchGalleryImages(); // З api.js
+        const images = await fetchGalleryImages(); 
         
         let galleryHTML = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
         
@@ -86,7 +83,7 @@ async function displayGallery(contentElement) {
             galleryHTML += '<p>Зображення не знайдено в папці gallery.</p>';
         } else {
             images.forEach(imgName => {
-                // Шлях до зображення через статичну папку public/gallery
+                
                 const imgPath = `/gallery/${imgName}`; 
                 galleryHTML += `
                     <img src="${imgPath}" alt="${imgName}" style="width: 30%; height: auto; object-fit: cover; border: 1px solid #ccc;">
@@ -103,11 +100,9 @@ async function displayGallery(contentElement) {
 }
 
 
-// =========================================================================
-// БЛОК FOOTER (Завдання 3, 11)
-// =========================================================================
+
 function setupFooter(footerElement) {
-    // Current Users - Припустимо, що 10 завантажених користувачів активні
+
     const currentUsersBlock = document.createElement('div');
     currentUsersBlock.innerHTML = `
         <h4>Current users</h4>
@@ -115,8 +110,8 @@ function setupFooter(footerElement) {
     `;
     footerElement.appendChild(currentUsersBlock);
 
-    // New Users - Список останніх 5 (Завдання 3, 11)
-    getNewUsers() // Виклик API
+    
+    getNewUsers() 
         .then(newUsers => {
             const newUsersBlock = document.createElement('div');
             const userList = newUsers.map(u => `<li>${u.lastname}</li>`).join('');
@@ -134,11 +129,9 @@ function setupFooter(footerElement) {
 }
 
 
-// =========================================================================
-// БЛОК CONTENT (Завдання 3, 12, 5)
-// =========================================================================
+
 function setupContentPanel(contentElement) {
-    // Приховуємо лоадер через 1 секунду (Завдання 3, 112)
+    
     setTimeout(() => {
         const loader = contentElement.querySelector('.loader-container');
         if (loader) loader.remove();
@@ -161,7 +154,7 @@ async function loadUsersAndDisplay() {
     container.innerHTML = '<h2>Loading users...</h2><div class="loader-container"><div class="loader"></div></div>';
     
     try {
-        const users = await fetchUsers(); // Виклик API
+        const users = await fetchUsers(); 
         currentLoadedUsers = users;
         
         container.innerHTML = '';
@@ -175,9 +168,7 @@ async function loadUsersAndDisplay() {
 }
 
 
-// =========================================================================
-// БЛОК LEFT PANEL (Завдання 6 + Погода ЛР №6)
-// =========================================================================
+
 function setupLeftPanel(leftPanelElement) {
     const loader = leftPanelElement.querySelector('.loader-container');
 
@@ -201,16 +192,16 @@ function setupLeftPanel(leftPanelElement) {
         document.getElementById('searchBtn').addEventListener('click', searchUsers);
         document.getElementById('clearSearchBtn').addEventListener('click', clearSearch);
         
-        // --- ЗАПУСК ПОГОДИ (КРИТИЧНЕ ВИПРАВЛЕННЯ!) ---
-        updateWeather(); // Перший запуск
+      
+        updateWeather(); 
         setInterval(updateWeather, 60000); 
 
     }, 1000);
 }
 
-// Логіка оновлення погоди (Завдання 3 ЛР №6)
+
 function updateWeather() {
-    fetch('/weather') // Звернення до сервера Express
+    fetch('/weather') 
         .then(res => res.json())
         .then(data => {
             const weatherBlock = document.getElementById('weatherBlock');
@@ -229,9 +220,7 @@ function updateWeather() {
 }
 
 
-// =========================================================================
-// БЛОК RIGHT PANEL (Завдання 7, 8)
-// =========================================================================
+
 function setupRightPanel(rightPanelElement) {
     const loader = rightPanelElement.querySelector('.loader-container');
 
@@ -255,7 +244,7 @@ function setupRightPanel(rightPanelElement) {
 }
 
 function updateRightPanelStats(users) {
-    // Сума балів (Завдання 7)
+    
     const totalScore = users.reduce((sum, user) => sum + user.score, 0);
     
     document.getElementById('statsPlaceholder').innerHTML = `
@@ -265,9 +254,7 @@ function updateRightPanelStats(users) {
 }
 
 
-// =========================================================================
-// ФУНКЦІЇ ТАБЛИЦІ (Завдання 5, 8, 9)
-// =========================================================================
+
 function createUsersTable(users, container) {
     let table = document.getElementById('usersTable');
     if (table) table.remove();
@@ -285,14 +272,14 @@ function createUsersTable(users, container) {
         th.textContent = text;
         headerRow.appendChild(th);
         
-        // Сортування при кліку на Прізвище (Завдання 9)
+        
         if (text === 'Lastname') {
              th.addEventListener('click', () => sortUsersInTable('lastname'));
         }
-        // Додайте тут логіку для сортування за Firstname та Score, якщо потрібно
+        
     });
     
-    // Додаткова колонка Delete (Завдання 8)
+   
     const isEditMode = document.getElementById('editTableCheckbox')?.checked;
     if (isEditMode) {
         const th = document.createElement('th');
@@ -320,7 +307,7 @@ function appendUserRow(tbody, user, isEditMode) {
         deleteBtn.textContent = 'Delete';
         
         deleteBtn.addEventListener('click', () => {
-            row.remove(); // Видалення рядка (Завдання 8)
+            row.remove(); 
         });
         actionCell.appendChild(deleteBtn);
     }
@@ -331,7 +318,7 @@ function toggleEditMode(event) {
     const table = document.getElementById('usersTable');
     if (!table) return;
 
-    // Отримуємо поточні дані з DOM (включаючи видалені користувачем)
+    
     const usersData = Array.from(table.rows).slice(1).map(row => ({
         firstname: row.cells[0].textContent,
         lastname: row.cells[1].textContent,
@@ -341,7 +328,7 @@ function toggleEditMode(event) {
     const content = document.getElementById('content');
     table.remove();
 
-    // Відновлюємо таблицю з новими колонками (Або без них)
+    
     createUsersTable(usersData, content); 
 }
 
@@ -350,18 +337,18 @@ function searchUsers() {
     const table = document.getElementById('usersTable');
     if (!table) return;
 
-    // Прибираємо попереднє виділення
+    
     table.querySelectorAll('tr').forEach(row => row.classList.remove('highlight'));
 
     if (searchTerm.length === 0) return;
 
-    // Обійти всі рядки (крім заголовка)
+    
     Array.from(table.rows).slice(1).forEach(row => {
-        // Перевіряємо вміст перших трьох колонок
+       
         const cellContents = Array.from(row.cells).slice(0, 3).map(cell => cell.textContent.toLowerCase()).join(' ');
         
         if (cellContents.includes(searchTerm)) {
-            row.classList.add('highlight'); // Виділення рядка (Завдання 6)
+            row.classList.add('highlight'); 
         }
     });
 }
@@ -375,12 +362,12 @@ function clearSearch() {
 }
 
 
-// Сортування на стороні клієнта (Завдання 9)
+
 function sortUsersInTable(column) {
     const table = document.getElementById('usersTable');
     if (!table) return;
     
-    // Визначаємо поточний напрямок і перемикаємо його
+    
     const currentDirection = currentSortOrder.column === column && currentSortOrder.direction === 'asc' ? 'desc' : 'asc';
     currentSortOrder = { column, direction: currentDirection };
 
@@ -388,7 +375,7 @@ function sortUsersInTable(column) {
     const rows = Array.from(tbody.rows);
     
     rows.sort((rowA, rowB) => {
-        // 1 - Прізвище, 2 - Score
+        
         const cellIndex = column === 'lastname' ? 1 : 2; 
         const valA = rowA.cells[cellIndex].textContent;
         const valB = rowB.cells[cellIndex].textContent;
@@ -404,6 +391,6 @@ function sortUsersInTable(column) {
         return currentDirection === 'asc' ? comparison : comparison * -1;
     });
 
-    // Оновлюємо таблицю відсортованими рядками
+    
     rows.forEach(row => tbody.appendChild(row));
 }
